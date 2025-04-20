@@ -2,6 +2,7 @@
 #[derive(Debug)]
 struct CubeSat {
     id: u64,
+    mailBox: Mailbox,
 }
 
 // 복잡한 로직 추상화
@@ -17,23 +18,43 @@ enum StatusMessage {
     Ok,
 }
 
+#[derive(Debug)]
+struct Mailbox {
+    messages: Vec<Message>,
+}
+
+type Message = String;
+
+struct GroundStation;
+
+impl GroundStation {
+    fn send(&self, to: &mut CubeSat, msg: Message){
+        to.mailBox.messages.push(msg);
+    }
+}
+
+impl CubeSat {
+    fn recv(&mut self) -> Option<Message> {
+        self.mailBox.messages.pop()
+    }
+}
+
 fn main() {
 
-    let sat_a = CubeSat{ id: 0 };
-    let sat_b = CubeSat{ id: 1 };
-    let sat_c = CubeSat{ id: 2 };
+    let base = GroundStation {};
+    let mut sat_a = CubeSat {
+        id: 0,
+        mailBox: Mailbox { messages:vec![] }
+    };
 
-    let sat_a = check_status(sat_a);
-    let sat_b = check_status(sat_b);
-    let sat_c = check_status(sat_c);
+    println!("t0: {:?}", sat_a);
 
-    // println!("a: {:?}, b: {:?}, c: {:?}", a_status, b_status, c_status);
-    // println!("a: {:?}, b: {:?}, c: {:?}", a_status, b_status, c_status);
+    base.send(&mut sat_a, Message::from("Hello, there!"));
 
-    // 대기중 ..
-    let sat_a = check_status(sat_a);
-    let sat_b = check_status(sat_b);
-    let sat_c = check_status(sat_c);
+    println!("t1: {:?}", sat_a);
 
-    // println!("a: {:?}, b: {:?}, c: {:?}", a_status, b_status, c_status);
+    let msg = sat_a.recv();
+    println!("t2: {:?}", sat_a);
+
+    println!("msg: {:?}", msg);
 }
