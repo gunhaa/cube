@@ -98,4 +98,6 @@ fn lifetime_refactoring(){
         let msg = sat.recv(&mut mail_box);
         println!("{:?}: {:?}", sat, msg);
     }
+
+    // 이외에도 copy(얕은 복사), clone(깊은 복사) 트레이트구현, Rc 를 이용한 공동 소유권으로 객체의 생명주기를 Rust에서 관리할 수 있다
 }
